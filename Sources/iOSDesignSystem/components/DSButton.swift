@@ -58,7 +58,7 @@ public struct DSButton: View {
         
         return AnyView(
             Text(NSLocalizedString(buttonProps.title, comment: ""))
-                .font(TypographyVariant.bodyLargeBold)
+                .font(themeManager.current.bodyLargeBold)
                 .frame(maxWidth: .infinity, minHeight: 54)
                 .background(colors.backgroundColor)
                 .foregroundColor(colors.textColor)
@@ -81,6 +81,7 @@ public struct DSButton: View {
             RoundedRectangle(cornerRadius: CornerRadius.infinite.rawValue)
                 .stroke(colors.borderColor, lineWidth: 1.5)
         )
+        .environmentObject(ThemeManager())
     }
     
     

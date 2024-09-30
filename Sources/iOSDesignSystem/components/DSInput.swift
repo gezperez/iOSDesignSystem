@@ -67,7 +67,7 @@ public struct DSInputField: View {
     }
     
     private func renderRightIcon() -> some View {
-        let inputScheme = self.inputScheme()
+        _ = self.inputScheme()
         
         let iconColor = inputProps.isDisabled ?? false ? themeManager.current.surfaceOutline : themeManager.current.primary
         
@@ -78,7 +78,7 @@ public struct DSInputField: View {
                     .progressViewStyle(CircularProgressViewStyle())
                     .frame(maxWidth: .infinity, alignment: .trailing)
             )
-        } else if let showSecureIcon = inputProps.isSecure {
+        } else if inputProps.isSecure != nil {
             return AnyView(
                 Button(action: toggleSecureInput) {
                     DSIcon(
@@ -113,7 +113,7 @@ public struct DSInputField: View {
            !inputProps.isDisabled! && !errorMessage.isEmpty && !inputProps.isLoading! {
             return AnyView(
                 Text(errorMessage)
-                    .font(TypographyVariant.bodySmallBold)
+                    .font(themeManager.current.bodySmallBold)
                     .foregroundColor(themeManager.current.danger)
                     .padding(.top, 2)
             )
@@ -170,7 +170,7 @@ public struct DSInputField: View {
         VStack(alignment: .leading) {
             if let title = inputProps.title, !title.isEmpty {
                 Text(title)
-                    .font(TypographyVariant.bodyDefaultRegular)
+                    .font(themeManager.current.bodyDefaultRegular)
                     .foregroundColor(themeManager.current.primary)
             }
             
@@ -193,7 +193,7 @@ public struct DSInputField: View {
                 .padding(.horizontal)
                 .padding(inputScheme.padding)
                 .foregroundColor(themeManager.current.primary)
-                .font(TypographyVariant.bodyDefaultBold)
+                .font(themeManager.current.bodyDefaultBold)
                 .overlay(
                     RoundedRectangle(
                         cornerRadius: CornerRadius.infinite.rawValue
@@ -215,8 +215,6 @@ public struct DSInputField: View {
 }
 
 #Preview {
-    let theme = LightTheme()
-    
     VStack {
         DSInputField(
             inputProps: DSInputProps(
@@ -277,5 +275,4 @@ public struct DSInputField: View {
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .padding()
-    .background(theme.background)
 }

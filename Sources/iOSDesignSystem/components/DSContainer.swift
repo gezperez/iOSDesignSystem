@@ -111,7 +111,12 @@ public struct DSContainer<Content: View>: View {
 
 #Preview {
     DSContainer(
-        headerProps: DSHeaderProps(title: "Sample Header"),
+        headerProps: DSHeaderProps(
+            title: "Sample Header",
+            onBackButtonPressed: {
+                
+            }
+        ),
         primaryButtonProps: DSContainerButtonProps(title: "Primary Button", action: {
             print("Primary Button Pressed")
         }),

@@ -95,12 +95,7 @@ struct DSCircularIconButton: View {
     }
     
     var body: some View {
-        let colors = colorProvider.colorScheme(
-            themeManager: themeManager,
-            isDisabled: buttonProps.isDisabled!,
-            variant: buttonProps.variant
-        )
-        
+   
         Button(action: buttonProps.action) {
             renderContent()
         }
@@ -108,11 +103,7 @@ struct DSCircularIconButton: View {
     }
 }
 
-#Preview {
-    let lightTheme = LightTheme()
-    
-    let darkTheme = DarkTheme()
-    
+#Preview {    
     HStack {
         VStack {
             DSCircularIconButton(
@@ -174,4 +165,5 @@ struct DSCircularIconButton: View {
         .padding()
         
     }
+    .environmentObject(ThemeManager())
 }

@@ -1,7 +1,7 @@
 import SwiftUI
 
 public class ThemeManager: ObservableObject {
-    @Published private var theme: ThemeProtocol = LightTheme() // Default theme
+    @Published private var theme: ThemeProtocol = MainTheme()
 
     public var current: ThemeProtocol {
         return theme
@@ -9,8 +9,8 @@ public class ThemeManager: ObservableObject {
 
     public init() {}
 
-    // Method to switch themes
-    public func switchTheme(to newTheme: ThemeProtocol) {
+    public func setTheme(to newTheme: ThemeProtocol) {
         self.theme = newTheme
     }
+
 }

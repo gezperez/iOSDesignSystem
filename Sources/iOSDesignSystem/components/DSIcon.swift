@@ -49,7 +49,9 @@ struct DSIcon: View {
                 height: iconProps.size.size.height
             )
             .foregroundColor(iconProps.color)
+            .environmentObject(ThemeManager())
     }
+    
 }
 
 #Preview {

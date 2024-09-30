@@ -2,9 +2,9 @@ import SwiftUI
 
 public struct DSHeaderProps {
     public var title: String
-    public var onBackButtonPressed: (() -> Void)?
+    public var onBackButtonPressed: (() -> Void)
     
-    public init(title: String, onBackButtonPressed: (() -> Void)? = nil) {
+    public init(title: String, onBackButtonPressed: @escaping (() -> Void)) {
         self.title = title
         self.onBackButtonPressed = onBackButtonPressed
     }
@@ -13,7 +13,6 @@ public struct DSHeaderProps {
 public struct DSHeader: View {
     public var headerProps: DSHeaderProps
     
-    @Environment(\.presentationMode) var presentationMode
     @StateObject private var themeManager = ThemeManager()
     
     public init(headerProps: DSHeaderProps) {
@@ -22,11 +21,7 @@ public struct DSHeader: View {
     
     private var backAction: () -> Void {
         return {
-            if let action = headerProps.onBackButtonPressed {
-                action()
-            } else {
-                presentationMode.wrappedValue.dismiss()
-            }
+            headerProps.onBackButtonPressed()
         }
     }
 
@@ -40,7 +35,7 @@ public struct DSHeader: View {
             Spacer()
 
             Text(headerProps.title)
-                .font(TypographyVariant.bodyLargeBold)
+                .font(themeManager.current.bodyLargeBold)
                 .bold()
                 .lineLimit(2)
                 .truncationMode(.tail)
@@ -61,5 +56,12 @@ public struct DSHeader: View {
 }
 
 #Preview {
-    DSHeader(headerProps: DSHeaderProps(title: "Title Large Title Large Title Large"))
+    DSHeader(
+        headerProps: DSHeaderProps(
+            title: "Title Large Title Large Title Large",
+            onBackButtonPressed: {
+                
+            }
+        )
+    )
 }
