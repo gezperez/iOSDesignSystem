@@ -6,19 +6,22 @@ public struct DSButtonProps {
     public var action: () -> Void
     public var isDisabled: Bool?
     public var isLoading: Bool?
+    public var fullWidth: Bool // New property for full width
     
     public init(
         title: String,
         variant: ButtonVariant,
         action: @escaping () -> Void,
         isDisabled: Bool = false,
-        isLoading: Bool = false
+        isLoading: Bool = false,
+        fullWidth: Bool = true
     ) {
         self.title = title
         self.variant = variant
         self.action = action
         self.isLoading = isLoading
         self.isDisabled = isDisabled
+        self.fullWidth = fullWidth
     }
 }
 
@@ -49,8 +52,10 @@ public struct DSButton: View {
             return AnyView(
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle())
-                    .frame(maxWidth: .infinity, minHeight: 54)
                     .background(colors.backgroundColor)
+                    .padding(.horizontal, 32)
+                    .frame(maxWidth: buttonProps.fullWidth ? .infinity : nil)
+                    .frame(height: 60)
                     .tint(colors.textColor)
                     .cornerRadius(CornerRadius.infinite.rawValue)
             )
@@ -59,7 +64,9 @@ public struct DSButton: View {
         return AnyView(
             Text(NSLocalizedString(buttonProps.title, comment: ""))
                 .font(themeManager.current.bodyLargeBold)
-                .frame(maxWidth: .infinity, minHeight: 54)
+                .padding(.horizontal, 32)
+                .frame(maxWidth: buttonProps.fullWidth ? .infinity : nil)
+                .frame(height: 60)
                 .background(colors.backgroundColor)
                 .foregroundColor(colors.textColor)
                 .cornerRadius(CornerRadius.infinite.rawValue)
@@ -75,6 +82,7 @@ public struct DSButton: View {
         
         Button(action: buttonProps.action) {
             renderContent()
+            
         }
         .disabled(isButtonDisabled)
         .overlay(
@@ -83,8 +91,6 @@ public struct DSButton: View {
         )
         .environmentObject(ThemeManager())
     }
-    
-    
 }
 
 #Preview {

@@ -67,7 +67,6 @@ public struct DSInputField: View {
     }
     
     private func renderRightIcon() -> some View {
-        _ = self.inputScheme()
         
         let iconColor = inputProps.isDisabled ?? false ? themeManager.current.surfaceOutline : themeManager.current.primary
         

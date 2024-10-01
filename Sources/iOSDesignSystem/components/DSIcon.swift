@@ -7,12 +7,12 @@ public enum IconSize {
     
     var size: CGSize {
         switch self {
-        case .lg:
-            return CGSize(width: 64, height: 64) // Large size
-        case .md:
-            return CGSize(width: 48, height: 48) // Medium size
-        case .sm:
-            return CGSize(width: 24, height: 24) // Small size
+            case .lg:
+                return CGSize(width: 64, height: 64) // Large size
+            case .md:
+                return CGSize(width: 48, height: 48) // Medium size
+            case .sm:
+                return CGSize(width: 24, height: 24) // Small size
         }
     }
 }
@@ -21,15 +21,18 @@ public struct DSIconProps {
     var systemImageName: String
     var size: IconSize
     var color: Color
+    var action: (() -> Void)?
     
     public init(
         systemImageName: String,
         size: IconSize = .md,
-        color: Color = .black
+        color: Color = .black,
+        action: (() -> Void)? = nil
     ) {
         self.systemImageName = systemImageName
         self.size = size
         self.color = color
+        self.action = action
     }
 }
 
@@ -40,16 +43,29 @@ struct DSIcon: View {
         self.iconProps = iconProps
     }
     
+    private var iconAction: () -> Void {
+        
+        if let action = iconProps.action {
+            return action
+        }
+        
+        return {}
+    }
+    
     var body: some View {
-        Image(systemName: iconProps.systemImageName)
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-            .frame(
-                width: iconProps.size.size.width,
-                height: iconProps.size.size.height
-            )
-            .foregroundColor(iconProps.color)
-            .environmentObject(ThemeManager())
+        Button(action: iconAction) {
+            Image(systemName: iconProps.systemImageName)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(
+                    width: iconProps.size.size.width,
+                    height: iconProps.size.size.height
+                )
+                .foregroundColor(iconProps.color)
+                .environmentObject(ThemeManager())
+        }
+        .disabled(iconProps.action == nil)
+        
     }
     
 }

@@ -1,18 +1,23 @@
 import SwiftUI
 
+struct CircularButtonScheme {
+    var dimension: CGFloat
+    var padding: CGFloat
+}
+
 public enum ButtonSize {
     case lg
     case md
     case sm
     
-    var size: CGSize {
+    var size: CircularButtonScheme {
         switch self {
             case .lg:
-                return CGSize(width: 80, height: 80)
+                return CircularButtonScheme(dimension: 80, padding: 18)
             case .md:
-                return CGSize(width: 60, height: 60)
+                return CircularButtonScheme(dimension: 60, padding: 16)
             case .sm:
-                return CGSize(width: 40, height: 40)
+                return CircularButtonScheme(dimension: 40, padding: 10)
         }
     }
 }
@@ -42,7 +47,7 @@ public struct DSCircularIconButtonProps {
     }
 }
 
-struct DSCircularIconButton: View {
+public struct DSCircularIconButton: View {
     @StateObject private var themeManager = ThemeManager()
     
     private var colorProvider: ButtonColorSchemeProvider
@@ -70,8 +75,8 @@ struct DSCircularIconButton: View {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle())
                     .frame(
-                        width: buttonProps.size.size.width,
-                        height: buttonProps.size.size.height
+                        width: buttonProps.size.size.dimension,
+                        height: buttonProps.size.size.dimension
                     )
                     .background(colors.backgroundColor)
                     .tint(colors.textColor)
@@ -83,10 +88,10 @@ struct DSCircularIconButton: View {
             Image(systemName: buttonProps.systemImageName)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .padding(16)
+                .padding(buttonProps.size.size.padding)
                 .frame(
-                    width: buttonProps.size.size.width,
-                    height: buttonProps.size.size.height
+                    width: buttonProps.size.size.dimension,
+                    height: buttonProps.size.size.dimension
                 )
                 .background(colors.backgroundColor)
                 .foregroundColor(colors.textColor)
@@ -94,7 +99,7 @@ struct DSCircularIconButton: View {
         )
     }
     
-    var body: some View {
+    public var body: some View {
    
         Button(action: buttonProps.action) {
             renderContent()

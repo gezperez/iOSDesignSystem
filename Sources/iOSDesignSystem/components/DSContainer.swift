@@ -19,7 +19,8 @@ public func convertToButtonProps(props: DSContainerButtonProps, variant: ButtonV
     return DSButtonProps(
         title: props.title,
         variant: variant,
-        action: props.action
+        action: props.action,
+        fullWidth: true
     )
 }
 
@@ -28,17 +29,22 @@ public struct DSContainer<Content: View>: View {
     public let primaryButtonProps: DSContainerButtonProps?
     public let secondaryButtonProps: DSContainerButtonProps?
     public let content: () -> Content
+    public let alignCenter: Bool?
     
     @StateObject private var themeManager = ThemeManager()
+    
+    @State private var isScrolled: Bool = false
     
     public init(headerProps: DSHeaderProps? = nil,
                 primaryButtonProps: DSContainerButtonProps? = nil,
                 secondaryButtonProps: DSContainerButtonProps? = nil,
-                @ViewBuilder content: @escaping () -> Content) {
+                @ViewBuilder content: @escaping () -> Content,
+                alignCenter: Bool? = nil) {
         self.headerProps = headerProps
         self.primaryButtonProps = primaryButtonProps
         self.secondaryButtonProps = secondaryButtonProps
         self.content = content
+        self.alignCenter = alignCenter
     }
     
     private var hasBottomProps: Bool {
@@ -48,25 +54,36 @@ public struct DSContainer<Content: View>: View {
     }
     
     private func renderContent() -> some View {
-        if hasBottomProps && headerProps != nil {
+        if let alignCenter = alignCenter, alignCenter {
             return AnyView(
-                ScrollView {
+                VStack(alignment: .center) {
+                    Spacer()
                     content()
                         .frame(maxWidth: .infinity)
-                        .padding()
+                    Spacer()
                 }
-                .frame(maxHeight: .infinity)
-                .background(themeManager.current.background)
+                    .frame(maxWidth: .infinity)
+                    .background(themeManager.current.background)
             )
+            
         }
         
         return AnyView(
-                    VStack(alignment: .center) {
-                        Spacer()
-                        content()
-                        Spacer()
-                    }
-                        .padding()
+            ScrollView {
+                GeometryReader { geometry in
+                    Color.clear
+                        .onChange(of: geometry.frame(in: .global).minY) { value in
+                            isScrolled = value < 0
+                        }
+                }
+                .frame(height: 0)
+                
+                content()
+                    .frame(maxWidth: .infinity)
+                    .padding()
+            }
+                .frame(maxHeight: .infinity)
+                .background(themeManager.current.background)
         )
     }
     
@@ -75,7 +92,7 @@ public struct DSContainer<Content: View>: View {
             VStack(spacing: 0) {
                 if let headerProps = headerProps {
                     DSHeader(headerProps: headerProps)
-                        .overlay(Rectangle().frame(width: nil, height: 1, alignment: .bottom).foregroundColor(themeManager.current.surfaceOutline), alignment: .bottom)
+                        .overlay(Rectangle().frame(width: nil, height: isScrolled ? 1 : 0, alignment: .bottom).foregroundColor(themeManager.current.surfaceOutline), alignment: .bottom)
                 }
                 
                 renderContent()
@@ -111,18 +128,6 @@ public struct DSContainer<Content: View>: View {
 
 #Preview {
     DSContainer(
-        headerProps: DSHeaderProps(
-            title: "Sample Header",
-            onBackButtonPressed: {
-                
-            }
-        ),
-        primaryButtonProps: DSContainerButtonProps(title: "Primary Button", action: {
-            print("Primary Button Pressed")
-        }),
-        secondaryButtonProps: DSContainerButtonProps(title: "Secondary Button", action: {
-            print("Secondary Button Pressed")
-        })
     ) {
         ForEach(0..<10) { _ in
             Text("This is the main content area.")
